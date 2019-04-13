@@ -107,14 +107,10 @@ static DEFAULT_CLAP_SETTINGS: &[AppSettings] = &[
 // Argument constants
 static VALIDATION: &str = "VALIDATION";
 static PREDICTION: &str = "PREDICTION";
-static CLAUSE_IDS: &str = "clause_ids";
-static NO_FIELDS: &str = "no_fields";
 static DEPREL_CONFUSION: &str = "deprel_confusion";
 static DEPREL_ACCURACIES: &str = "deprel_accuracies";
 static DISTANCE_ACCURACIES: &str = "distance_confusion";
 static DISTANCE_CONFUSION: &str = "distance_accuracies";
-static NO_RELS: &str = "no_rels";
-static FIELD_FEATURE_NAME: &str  = "tf_feature";
 
 fn parse_args() -> ArgMatches<'static> {
     App::new("reduce-ptb")
@@ -154,30 +150,6 @@ fn parse_args() -> ArgMatches<'static> {
                 .takes_value(true)
                 .long(DEPREL_ACCURACIES)
                 .help("print DISTANCE_ACCURACIES to file")
-        )
-        .arg(
-            Arg::with_name(CLAUSE_IDS)
-                .long(CLAUSE_IDS)
-                .help("Use clause IDs to derive rel predictions.")
-        )
-        .arg(
-            Arg::with_name(NO_FIELDS)
-                .long(NO_FIELDS)
-                .help("Don't evaluate topological fields")
-                .conflicts_with(NO_RELS)
-        )
-        .arg(
-            Arg::with_name(NO_RELS)
-                .long(NO_RELS)
-                .help("Don't evaluate relations")
-                .conflicts_with(NO_FIELDS)
-        )
-        .arg(
-            Arg::with_name(FIELD_FEATURE_NAME)
-                .long(FIELD_FEATURE_NAME)
-                .help("Use other field feature name for pred file. (Default p_tf)")
-                .takes_value(true)
-                .conflicts_with(NO_FIELDS)
         )
         .get_matches()
 }
