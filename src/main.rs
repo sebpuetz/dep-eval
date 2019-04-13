@@ -60,6 +60,17 @@ pub fn main() -> Result<(), Error> {
             total += 1;
         }
     }
+
+    if let Ok(Some(_)) = val_reader.read_sentence() {
+        eprintln!("Val reader not exhausted.");
+        std::process::exit(1)
+    }
+
+    if let Ok(Some(_)) = pred_reader.read_sentence() {
+        eprintln!("Pred reader not exhausted.");
+        std::process::exit(1)
+    }
+
     println!("UAS: {:.4}", correct_head as f32 / total as f32);
     println!("LAS: {:.4}", correct_head_label as f32 / total as f32);
 
