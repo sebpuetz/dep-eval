@@ -30,6 +30,8 @@ pub fn main() -> Result<(), Error> {
     let mut deprel_confusion = Confusion::<String>::new("Deprels");
     let mut distance_confusion = Confusion::<usize>::new("Dists");
 
+    let skip_punct = matches.is_present(SKIP_PUNCTUATION);
+
     let mut correct_head = 0;
     let mut correct_head_label = 0;
     let mut total = 0;
@@ -42,6 +44,11 @@ pub fn main() -> Result<(), Error> {
             .zip(pred_sentence.iter().filter_map(|t| t.token()))
             .enumerate() {
             assert_eq!(val_token.form(), pred_token.form());
+            if skip_punct {
+                if val_token.pos().expect("Validation token missing POS").starts_with("PUNCT") {
+                    continue
+                }
+            }
             let idx = idx+1 ;
             let val_triple = val_sentence.dep_graph().head(idx).unwrap();
             let val_head = val_triple.head();
@@ -111,6 +118,7 @@ static DEPREL_CONFUSION: &str = "deprel_confusion";
 static DEPREL_ACCURACIES: &str = "deprel_accuracies";
 static DISTANCE_ACCURACIES: &str = "distance_confusion";
 static DISTANCE_CONFUSION: &str = "distance_accuracies";
+static SKIP_PUNCTUATION: &str = "skip_punctuation";
 
 fn parse_args() -> ArgMatches<'static> {
     App::new("reduce-ptb")
@@ -150,6 +158,11 @@ fn parse_args() -> ArgMatches<'static> {
                 .takes_value(true)
                 .long(DEPREL_ACCURACIES)
                 .help("print DISTANCE_ACCURACIES to file")
+        )
+        .arg(
+            Arg::with_name(SKIP_PUNCTUATION)
+                .long(SKIP_PUNCTUATION)
+                .help("Ignore punctuation.")
         )
         .get_matches()
 }
